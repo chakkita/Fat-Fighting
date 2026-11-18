@@ -94,6 +94,10 @@ body:not(.admin) .mbox .row label.btn,body:not(.admin) [data-rmphoto]{display:no
 .role{font:700 11px Orbitron,monospace;padding:4px 8px;border-radius:4px;border:1px solid var(--line);color:var(--mut)}
 .role.a{border-color:var(--o);color:var(--o)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--panel);border:1px solid var(--r);color:var(--tx);padding:10px 16px;border-radius:8px;z-index:99;font-size:14px;max-width:90%}
+body:not(.admin):not(.judge) .jdg{display:none!important}
+body.judge .vonly{display:none!important}
+.role.j{border-color:var(--g);color:var(--g)}
+.btn.sm{padding:6px 10px;font-size:12px}
 </style>
 </head>
 <body>
@@ -102,9 +106,9 @@ body:not(.admin) .mbox .row label.btn,body:not(.admin) [data-rmphoto]{display:no
   <div><div class="logo dg">FAT<b>FIGHTING</b> <i>//</i></div><div class="sub">โครงการลดน้ำหนักเพื่อสุขภาพ · Weight Loss Challenge</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><span class="role" id="roleTag">👁 VIEWER · READ ONLY</span><span class="role" id="syncTag">CONNECTING…</span></div></div>
   <nav id="nav">
     <button data-t="dash" class="on"><span>🏆 แดชบอร์ด</span></button>
-    <button class="vonly" data-t="login"><span>🔐 Admin Login</span></button><button class="adm" id="logout"><span>🚪 ออกจากระบบ</span></button><button class="adm" data-t="reg"><span>📝 ลงทะเบียน</span></button>
-    <button class="adm" data-t="chk"><span>⚖️ บันทึกผล</span></button>
-    <button class="adm" data-t="set"><span>⚙️ ตั้งค่าโครงการ</span></button>
+    <button class="vonly" data-t="login"><span>🔐 Admin Login</span></button><button class="jdg" id="logout"><span>🚪 ออกจากระบบ</span></button><button class="adm" data-t="reg"><span>📝 ลงทะเบียน</span></button>
+    <button class="jdg" data-t="chk"><span>⚖️ บันทึกผล</span></button>
+    <button class="adm" data-t="usr"><span>👥 ผู้ใช้งาน</span></button><button class="adm" data-t="set"><span>⚙️ ตั้งค่าโครงการ</span></button>
   </nav>
 </header>
 
@@ -115,7 +119,7 @@ body:not(.admin) .mbox .row label.btn,body:not(.admin) [data-rmphoto]{display:no
 </section>
 
 <section id="login" class="tab">
-  <div class="panel" style="max-width:420px;margin:30px auto"><h2><em>🔐</em><span id="lgTitle">เข้าสู่ระบบผู้ดูแล</span></h2>
+  <div class="panel" style="max-width:420px;margin:30px auto"><h2><em>🔐</em><span id="lgTitle">เข้าสู่ระบบ Admin / กรรมการ</span></h2>
     <div class="sub" id="lgInfo" style="margin-bottom:12px"></div>
     <div><label>อีเมลผู้ดูแล</label><input id="lu" type="email" autocomplete="username"></div>
     <div style="margin-top:10px"><label>รหัสผ่าน</label><input id="lp" type="password" autocomplete="current-password"></div>
@@ -139,7 +143,7 @@ body:not(.admin) .mbox .row label.btn,body:not(.admin) [data-rmphoto]{display:no
   <div class="panel"><h2><em>LIST</em>ผู้สมัครทั้งหมด</h2><div class="tw" id="plist"></div></div>
 </section>
 
-<section id="chk" class="tab adm">
+<section id="chk" class="tab jdg">
   <div class="panel"><h2><em>CHECK-IN</em>บันทึกผลการชั่งน้ำหนัก</h2>
     <div class="grid">
       <div><label>ผู้เข้าแข่งขัน</label><select id="cp"></select></div>
@@ -151,6 +155,19 @@ body:not(.admin) .mbox .row label.btn,body:not(.admin) [data-rmphoto]{display:no
     <div class="row"><button class="btn o" id="chkBtn">บันทึกผล</button><span class="msg" id="chkMsg"></span></div>
   </div>
   <div class="panel"><h2><em>LOG</em>ประวัติของผู้เข้าแข่งขัน</h2><div class="tw" id="hist"></div></div>
+</section>
+
+<section id="usr" class="tab adm">
+  <div class="panel"><h2><em>NEW</em>สร้างผู้ใช้กรรมการ</h2>
+    <div class="sub" style="margin-bottom:12px">กรรมการเข้าสู่ระบบได้และ<b>บันทึกผลการชั่งน้ำหนักได้เท่านั้น</b> — ลงทะเบียน แก้ไขตั้งค่า ลบข้อมูล และจัดการผู้ใช้ทำไม่ได้</div>
+    <div class="grid">
+      <div><label>ชื่อกรรมการ</label><input id="jn"></div>
+      <div><label>อีเมล (ใช้เข้าสู่ระบบ)</label><input id="je" type="email" autocomplete="off"></div>
+      <div><label>รหัสผ่าน (อย่างน้อย 8 ตัว)</label><input id="jp" type="text" autocomplete="off"></div>
+    </div>
+    <div class="row"><button class="btn" id="jBtn">สร้างผู้ใช้กรรมการ</button><span class="msg" id="jMsg"></span></div>
+  </div>
+  <div class="panel"><h2><em>LIST</em>รายชื่อกรรมการ</h2><div class="tw" id="ulist"></div></div>
 </section>
 
 <section id="set" class="tab adm">
@@ -189,7 +206,7 @@ let S=defState();
 
 const CFG=window.FF_CONFIG||{};
 const sb=supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_KEY);
-let ADMIN=false,SNAP=null,LASTJ="",syncing=false,again=false;
+let ADMIN=false,ROLE=null,SNAP=null,LASTJ="",syncing=false,again=false;
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),5000)}
 /* flatten app state into table rows */
 function rows(s){const p={},c={};
@@ -201,14 +218,14 @@ const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const chk=r=>{if(r.error)throw r.error};
 function save(){pushDiff()}
 async function pushDiff(){
-  if(!ADMIN)return;if(syncing){again=true;return}syncing=true;let failed=false;
+  if(!ROLE)return;if(syncing){again=true;return}syncing=true;let failed=false;
   try{do{again=false;const cur=rows(S),old=SNAP||{set:null,p:{},c:{}};
-    if(!same(cur.set,old.set))chk(await sb.from("settings").upsert(cur.set));
+    if(ADMIN&&!same(cur.set,old.set))chk(await sb.from("settings").upsert(cur.set));
     const delP=Object.keys(old.p).filter(id=>!cur.p[id]);
-    if(delP.length)chk(await sb.from("participants").delete().in("id",delP));
+    if(ADMIN&&delP.length)chk(await sb.from("participants").delete().in("id",delP));
     const upP=Object.values(cur.p).filter(r=>!same(r,old.p[r.id]));
-    if(upP.length)chk(await sb.from("participants").upsert(upP));
-    for(const k of Object.keys(old.c)){if(!cur.c[k]&&cur.p[old.c[k].participant_id])
+    if(ADMIN&&upP.length)chk(await sb.from("participants").upsert(upP));
+    for(const k of Object.keys(old.c)){if(ADMIN&&!cur.c[k]&&cur.p[old.c[k].participant_id])
       chk(await sb.from("checkins").delete().eq("participant_id",old.c[k].participant_id).eq("checkpoint",old.c[k].checkpoint))}
     const upC=Object.keys(cur.c).filter(k=>!same(cur.c[k],old.c[k])).map(k=>cur.c[k]);
     if(upC.length)chk(await sb.from("checkins").upsert(upC,{onConflict:"participant_id,checkpoint"}));
@@ -227,15 +244,31 @@ async function load(){
   c.data.forEach(r=>{(ns.logs[r.participant_id]=ns.logs[r.participant_id]||{})[r.checkpoint]={w:+r.weight,c:r.waist==null?undefined:+r.waist}});
   const j=JSON.stringify(ns);if(j===LASTJ)return;
   LASTJ=j;S=ns;SNAP=rows(S);renderAll()}
-async function isAdmin(){const r=await sb.from("admins").select("user_id").maybeSingle();return !!r.data}
-function setRole(a){
-  if(!a)sb.auth.signOut().catch(()=>{});
-  ADMIN=a;document.body.classList.toggle("admin",a);
-  $("roleTag").textContent=a?"🛠 ADMIN":"👁 VIEWER · READ ONLY";$("roleTag").classList.toggle("a",a);
+async function getRole(){
+  const a=await sb.from("admins").select("user_id").maybeSingle();if(a.data)return"admin";
+  const j=await sb.from("judges").select("user_id").maybeSingle();if(j.data)return"judge";
+  return null}
+function setRole(role){
+  if(!role)sb.auth.signOut().catch(()=>{});
+  ROLE=role||null;ADMIN=ROLE==="admin";
+  document.body.classList.toggle("admin",ADMIN);document.body.classList.toggle("judge",ROLE==="judge");
+  const t=$("roleTag");t.textContent=ADMIN?"🛠 ADMIN":ROLE==="judge"?"📋 กรรมการ · JUDGE":"👁 VIEWER · READ ONLY";
+  t.classList.toggle("a",ADMIN);t.classList.toggle("j",ROLE==="judge");
   if(typeof closeDetail==="function")closeDetail();
   document.querySelector('nav button[data-t="dash"]').click()}
+/* ---- user management (admin) ---- */
+async function callUsers(body){
+  const r=await sb.functions.invoke("manage-users",{body});
+  if(r.error){let m=r.error.message;try{const j=await r.error.context.json();m=j.error||m}catch(e){}throw new Error(m)}
+  if(r.data&&r.data.error)throw new Error(r.data.error);return r.data}
+async function loadJudges(){
+  const r=await sb.from("judges").select("*").order("created_at");
+  if(r.error){$("ulist").innerHTML='<div class="empty">โหลดรายชื่อไม่สำเร็จ: '+esc(r.error.message)+'</div>';return}
+  if(!r.data.length){$("ulist").innerHTML='<div class="empty">ยังไม่มีผู้ใช้กรรมการ</div>';return}
+  $("ulist").innerHTML='<table style="min-width:560px"><thead><tr><th>ชื่อกรรมการ</th><th>อีเมล</th><th>สร้างเมื่อ</th><th></th></tr></thead><tbody>'+
+  r.data.map(j=>`<tr><td>${esc(j.display_name)}</td><td>${esc(j.email)}</td><td>${fmt(j.created_at.slice(0,10))}</td><td style="white-space:nowrap"><button class="btn g sm" data-reset="${j.user_id}">เปลี่ยนรหัสผ่าน</button> <button class="btn g sm" data-deluser="${j.user_id}" data-n="${esc(j.display_name)}">ลบ</button></td></tr>`).join("")+"</tbody></table>"}
 function refreshLoginUI(){
-  $("lgTitle").textContent="เข้าสู่ระบบผู้ดูแล";$("lcw").style.display="none";$("lgBtn").textContent="เข้าสู่ระบบ";
+  $("lgTitle").textContent="เข้าสู่ระบบ Admin / กรรมการ";$("lcw").style.display="none";$("lgBtn").textContent="เข้าสู่ระบบ";
   $("lgInfo").textContent="เฉพาะผู้ดูแลระบบ — ผู้ชมดูแดชบอร์ดได้โดยไม่ต้องเข้าสู่ระบบ"}
 
 function checkpoints(){
@@ -402,7 +435,7 @@ function renderCPL(){
 function renderAll(){const m=$("modal").classList.contains("on")&&CUR;renderStats();renderTL();renderLB();renderPeople();renderCheckSel();renderSet()}
 
 /* ---------- events ---------- */
-$("nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="logout"){setRole(false);return}if(b.dataset.t==="login")refreshLoginUI();
+$("nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="logout"){setRole(null);return}if(b.dataset.t==="login")refreshLoginUI();if(b.dataset.t==="usr")loadJudges();
   document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.id===b.dataset.t));renderAll()};
 document.querySelectorAll("#fq .chip").forEach(c=>c.onclick=()=>{S.set.freq=+c.dataset.f;renderSet();
@@ -460,8 +493,18 @@ $("lgBtn").onclick=async()=>{
   const m=$("lgMsg");m.style.color="var(--r)";m.textContent="กำลังตรวจสอบ…";
   const {error}=await sb.auth.signInWithPassword({email:$("lu").value.trim(),password:$("lp").value});
   if(error){m.textContent=error.status===429?"ลองบ่อยเกินไป กรุณารอสักครู่":"อีเมลหรือรหัสผ่านไม่ถูกต้อง";return}
-  if(!(await isAdmin())){await sb.auth.signOut();m.textContent="บัญชีนี้ไม่มีสิทธิ์ผู้ดูแล";return}
-  $("lp").value="";m.textContent="";setRole(true)};
+  const role=await getRole();
+  if(!role){await sb.auth.signOut();m.textContent="บัญชีนี้ยังไม่ได้รับสิทธิ์ผู้ดูแลหรือกรรมการ";return}
+  $("lp").value="";m.textContent="";setRole(role)};
+$("jBtn").onclick=async()=>{const m=$("jMsg");m.style.color="var(--r)";m.textContent="กำลังสร้าง…";
+  try{await callUsers({action:"create",display_name:$("jn").value,email:$("je").value,password:$("jp").value});
+    ["jn","je","jp"].forEach(i=>$(i).value="");m.style.color="var(--g)";m.textContent="✔ สร้างผู้ใช้กรรมการแล้ว — แจ้งอีเมลและรหัสผ่านให้กรรมการ";loadJudges()}
+  catch(e){m.textContent=e.message}};
+$("ulist").onclick=async e=>{const t=e.target;
+  try{
+    if(t.dataset.deluser){if(!confirm("ลบผู้ใช้กรรมการ “"+t.dataset.n+"” ? (ข้อมูลที่เขาบันทึกไว้ยังอยู่)"))return;await callUsers({action:"delete",user_id:t.dataset.deluser});loadJudges()}
+    if(t.dataset.reset){const pw=prompt("รหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร)");if(!pw)return;await callUsers({action:"reset_password",user_id:t.dataset.reset,password:pw});toast("✔ เปลี่ยนรหัสผ่านแล้ว")}
+  }catch(err){toast("ไม่สำเร็จ: "+err.message)}};
 ["lu","lp"].forEach(id=>$(id).onkeydown=e=>{if(e.key==="Enter")$("lgBtn").click()});
 $("pwBtn").onclick=async()=>{const pw=$("npw").value,m=$("pwMsg");
   if(pw.length<8){m.style.color="var(--r)";m.textContent="อย่างน้อย 8 ตัวอักษร";return}
@@ -473,7 +516,7 @@ renderAll();refreshLoginUI();
   const tag=$("syncTag");
   const ok=()=>{tag.textContent="● LIVE SYNC";tag.style.color="var(--g)"},bad=()=>{tag.textContent="OFFLINE";tag.style.color="var(--r)"};
   try{await load();ok()}catch(e){bad()}
-  try{const {data}=await sb.auth.getSession();if(data.session&&await isAdmin())setRole(true)}catch(e){}
+  try{const {data}=await sb.auth.getSession();if(data.session){const r=await getRole();if(r)setRole(r)}}catch(e){}
   let tm;sb.channel("ff").on("postgres_changes",{event:"*",schema:"public"},()=>{clearTimeout(tm);tm=setTimeout(()=>load().then(ok).catch(bad),500)}).subscribe();
   setInterval(()=>{if(!document.hidden)load().then(ok).catch(bad)},30000);
 })();
