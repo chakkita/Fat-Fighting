@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fat Fighting – ลดน้ำหนักเพื่อสุขภาพ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Kanit:wght@300;400;500;600&display=swap">
+<style>
+:root{--bg:#07090d;--panel:#0f141b;--panel2:#161d27;--line:#243040;--tx:#e8eef5;--mut:#7f8da0;--g:#39ff14;--o:#ff6a00;--r:#ff3b4e;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(1200px 500px at 80% -10%,#10301a55,transparent),var(--bg);color:var(--tx);font-family:Kanit,"Noto Sans Thai",system-ui,sans-serif;min-height:100vh}
+.dg{font-family:Orbitron,"Courier New",monospace;letter-spacing:.04em}
+.wrap{max-width:1180px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:8px 0 16px;border-bottom:2px solid var(--line)}
+.logo{font-size:26px;font-weight:900;line-height:1}.logo b{color:var(--g);text-shadow:0 0 14px #39ff1488}.logo i{color:var(--o);font-style:normal}
+.sub{color:var(--mut);font-size:13px;margin-top:4px}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:var(--panel);color:var(--mut);border:1px solid var(--line);padding:9px 14px;border-radius:6px;font:500 14px Kanit,sans-serif;cursor:pointer;transform:skewX(-8deg)}
+nav button span{display:inline-block;transform:skewX(8deg)}
+nav button.on{background:var(--g);color:#031200;border-color:var(--g);box-shadow:0 0 16px #39ff1455}
+.tab{display:none;margin-top:18px}.tab.on{display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--g);border-radius:8px;padding:14px}
+.card.o{border-left-color:var(--o)}
+.card small{color:var(--mut);font-size:12px}
+.card .v{font-family:Orbitron,monospace;font-size:28px;font-weight:700;color:var(--g);margin-top:4px}
+.card.o .v{color:var(--o)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:14px}
+h2{margin:0 0 12px;font-size:16px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+h2 em{font-style:normal;color:var(--o);font-family:Orbitron,monospace;font-size:13px;margin-right:8px}
+.tl{position:relative;margin:34px 14px 52px;height:8px;background:var(--panel2);border-radius:8px}
+.tl .fill{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--g),var(--o));border-radius:8px;box-shadow:0 0 12px #39ff1466}
+.node{position:absolute;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--bg);border:3px solid var(--line)}
+.node.done{border-color:var(--g);background:var(--g)}.node.next{border-color:var(--o);animation:p 1.4s infinite}
+.node .l{position:absolute;top:24px;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap;font-size:11px;color:var(--mut)}
+.node .l b{display:block;color:var(--tx);font-family:Orbitron,monospace;font-size:11px}
+@keyframes p{50%{box-shadow:0 0 0 7px #ff6a0033}}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th{font-size:11px;color:var(--mut);text-align:left;padding:8px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line)}
+td{padding:10px 8px;border-bottom:1px solid #1a2330;font-size:14px;vertical-align:middle}
+td.n{font-family:Orbitron,monospace;font-weight:700}
+.rk{font-family:Orbitron,monospace;font-size:20px;font-weight:900;width:44px}
+tr.r1 .rk{color:#ffd400}tr.r2 .rk{color:#c9d3df}tr.r3 .rk{color:var(--o)}
+tr.r1{background:linear-gradient(90deg,#39ff1412,transparent)}
+.who{display:flex;align-items:center;gap:10px}
+.av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--g);flex:none}
+.who small{display:block;color:var(--mut);font-size:12px}
+.pts{color:var(--g);font-family:Orbitron,monospace;font-size:18px;font-weight:700}
+.pct{color:var(--o);font-family:Orbitron,monospace;font-weight:700}
+.bar{height:6px;background:var(--panel2);border-radius:4px;margin-top:5px;width:90px}.bar i{display:block;height:100%;background:var(--g);border-radius:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+label{display:block;font-size:13px;color:var(--mut);margin-bottom:5px}
+input,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--tx);padding:10px;border-radius:6px;font:400 15px Kanit,sans-serif}
+input:focus,select:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 2px #39ff1433}
+.btn{background:var(--g);color:#031200;border:0;padding:11px 20px;border-radius:6px;font:600 15px Kanit,sans-serif;cursor:pointer;box-shadow:0 0 14px #39ff1444}
+.btn.o{background:var(--o);color:#1a0900;box-shadow:0 0 14px #ff6a0044}
+.btn.g{background:transparent;color:var(--mut);border:1px solid var(--line);box-shadow:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 14px;border:1px solid var(--line);border-radius:6px;cursor:pointer;color:var(--mut);font-size:14px}
+.chip.on{border-color:var(--o);color:var(--o);background:#ff6a0014}
+.big{font-family:Orbitron,monospace;font-size:34px;font-weight:900;color:var(--o)}
+.prev{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-end;margin-top:14px;padding:14px;background:var(--panel2);border-radius:8px;border:1px dashed var(--line)}
+.msg{margin-top:12px;color:var(--g);font-size:14px;min-height:20px}
+.chk{display:inline-block;font:700 11px Orbitron,monospace;padding:3px 7px;border-radius:4px;background:var(--panel2);color:var(--mut);margin:2px}
+.chk.ok{background:#39ff1420;color:var(--g)}
+.empty{text-align:center;color:var(--mut);padding:30px}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:12px;margin:6px 0 18px}
+.pod{flex:1;max-width:230px;background:var(--panel2);border:1px solid var(--line);border-radius:10px 10px 0 0;text-align:center;padding:12px 8px;cursor:pointer;position:relative}
+.pod:hover{border-color:var(--g)}
+.pod.p1{min-height:215px;border-top:4px solid #ffd400;background:linear-gradient(#ffd40014,var(--panel2))}
+.pod.p2{min-height:180px;border-top:4px solid #c9d3df}
+.pod.p3{min-height:155px;border-top:4px solid var(--o)}
+.pod .av{width:64px;height:64px}.pod.p1 .av{width:78px;height:78px;border-color:#ffd400;box-shadow:0 0 18px #ffd40066}
+.pod .nm{font-weight:500;margin-top:6px;font-size:14px}
+.pod .rn{font-family:Orbitron,monospace;font-weight:900;font-size:22px;color:#ffd400}
+.pod.p2 .rn{color:#c9d3df}.pod.p3 .rn{color:var(--o)}
+.tier{display:inline-block;font:700 10px Orbitron,monospace;padding:3px 7px;border-radius:4px;border:1px solid var(--o);color:var(--o);letter-spacing:.06em}
+.tier.t1{border-color:#ffd400;color:#ffd400}.tier.t0{border-color:var(--line);color:var(--mut)}.tier.tg{border-color:var(--g);color:var(--g)}
+.mv{font:700 12px Orbitron,monospace}.up{color:var(--g)}.dn{color:var(--r)}.eq{color:var(--mut)}
+tr.click{cursor:pointer}tr.click:hover{background:#39ff1410}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:50;overflow:auto;padding:20px 12px}
+.modal.on{display:block}
+.mbox{max-width:760px;margin:0 auto;background:var(--panel);border:1px solid var(--g);border-radius:12px;padding:18px;box-shadow:0 0 40px #39ff1433;position:relative}
+.mx{position:absolute;right:12px;top:10px;background:none;border:0;color:var(--mut);font-size:26px;cursor:pointer}
+.mh{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-right:30px}
+.mh .av{width:104px;height:104px;border-width:3px;box-shadow:0 0 18px #39ff1455}
+.mh h3{margin:0;font-size:22px}
+.mrank{font-family:Orbitron,monospace;font-size:40px;font-weight:900;color:var(--o);line-height:1}
+body:not(.admin) .adm{display:none!important}
+body.admin .vonly{display:none!important}
+body:not(.admin) .mbox .row label.btn,body:not(.admin) [data-rmphoto]{display:none!important}
+.role{font:700 11px Orbitron,monospace;padding:4px 8px;border-radius:4px;border:1px solid var(--line);color:var(--mut)}
+.role.a{border-color:var(--o);color:var(--o)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--panel);border:1px solid var(--r);color:var(--tx);padding:10px 16px;border-radius:8px;z-index:99;font-size:14px;max-width:90%}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><div class="logo dg">FAT<b>FIGHTING</b> <i>//</i></div><div class="sub">โครงการลดน้ำหนักเพื่อสุขภาพ · Weight Loss Challenge</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><span class="role" id="roleTag">👁 VIEWER · READ ONLY</span><span class="role" id="syncTag">CONNECTING…</span></div></div>
+  <nav id="nav">
+    <button data-t="dash" class="on"><span>🏆 แดชบอร์ด</span></button>
+    <button class="vonly" data-t="login"><span>🔐 Admin Login</span></button><button class="adm" id="logout"><span>🚪 ออกจากระบบ</span></button><button class="adm" data-t="reg"><span>📝 ลงทะเบียน</span></button>
+    <button class="adm" data-t="chk"><span>⚖️ บันทึกผล</span></button>
+    <button class="adm" data-t="set"><span>⚙️ ตั้งค่าโครงการ</span></button>
+  </nav>
+</header>
+
+<section id="dash" class="tab on">
+  <div class="cards" id="stats"></div>
+  <div class="panel"><h2><em>01</em>Timeline รอบการชั่งน้ำหนัก</h2><div id="tl"></div></div>
+  <div class="panel"><h2><em>02</em>Leaderboard อันดับคะแนน</h2><div class="chips" id="sortChips" style="margin-bottom:14px"></div><div class="podium" id="podium"></div><div class="sub" style="margin-bottom:6px">👆 คลิกที่ผู้เข้าแข่งขันเพื่อดูรายละเอียด</div><div class="tw" id="lb"></div></div>
+</section>
+
+<section id="login" class="tab">
+  <div class="panel" style="max-width:420px;margin:30px auto"><h2><em>🔐</em><span id="lgTitle">เข้าสู่ระบบผู้ดูแล</span></h2>
+    <div class="sub" id="lgInfo" style="margin-bottom:12px"></div>
+    <div><label>อีเมลผู้ดูแล</label><input id="lu" type="email" autocomplete="username"></div>
+    <div style="margin-top:10px"><label>รหัสผ่าน</label><input id="lp" type="password" autocomplete="current-password"></div>
+    <div style="margin-top:10px;display:none" id="lcw"><label>ยืนยันรหัสผ่าน</label><input id="lp2" type="password" autocomplete="new-password"></div>
+    <div class="row"><button class="btn" id="lgBtn">เข้าสู่ระบบ</button><span class="msg" id="lgMsg"></span></div>
+  </div>
+</section>
+
+<section id="reg" class="tab adm">
+  <div class="panel"><h2><em>REG</em>ลงทะเบียนผู้สมัคร</h2>
+    <div class="grid">
+      <div><label>ชื่อ</label><input id="fn"></div>
+      <div><label>นามสกุล</label><input id="ln"></div>
+      <div><label>ตำแหน่ง / สังกัด</label><input id="pos"></div>
+      <div><label>น้ำหนักตั้งต้น (กก.)</label><input id="w0" type="number" step="0.1" min="20"></div>
+      <div><label>รอบเอวตั้งต้น (ซม.)</label><input id="c0" type="number" step="0.1" min="30"></div>
+      <div><label>รูปถ่าย (ไม่ใส่ = อวตารอัตโนมัติ)</label><input id="ph" type="file" accept="image/*"></div>
+    </div>
+    <div class="row"><button class="btn" id="regBtn">ลงทะเบียน</button><span class="msg" id="regMsg"></span></div>
+  </div>
+  <div class="panel"><h2><em>LIST</em>ผู้สมัครทั้งหมด</h2><div class="tw" id="plist"></div></div>
+</section>
+
+<section id="chk" class="tab adm">
+  <div class="panel"><h2><em>CHECK-IN</em>บันทึกผลการชั่งน้ำหนัก</h2>
+    <div class="grid">
+      <div><label>ผู้เข้าแข่งขัน</label><select id="cp"></select></div>
+      <div><label>รอบการชั่งน้ำหนัก</label><select id="cc"></select></div>
+      <div><label>น้ำหนักล่าสุด (กก.)</label><input id="cw" type="number" step="0.1" min="20"></div>
+      <div><label>รอบเอวล่าสุด (ซม.)</label><input id="cwa" type="number" step="0.1" min="30"></div>
+    </div>
+    <div class="prev" id="prev"></div>
+    <div class="row"><button class="btn o" id="chkBtn">บันทึกผล</button><span class="msg" id="chkMsg"></span></div>
+  </div>
+  <div class="panel"><h2><em>LOG</em>ประวัติของผู้เข้าแข่งขัน</h2><div class="tw" id="hist"></div></div>
+</section>
+
+<section id="set" class="tab adm">
+  <div class="panel"><h2><em>SET</em>การตั้งค่าโครงการ</h2>
+    <div class="grid">
+      <div><label>วันที่เริ่มต้นโครงการ</label><input id="sd" type="date"></div>
+      <div><label>วันที่สิ้นสุดโครงการ</label><input id="ed" type="date"></div>
+      <div><label>ความถี่รอบการชั่งน้ำหนัก</label>
+        <div class="chips" id="fq"><div class="chip" data-f="2">ทุก 2 สัปดาห์</div><div class="chip" data-f="4">ทุก 4 สัปดาห์</div></div></div>
+    </div>
+    <div class="row"><button class="btn" id="setBtn">บันทึกการตั้งค่า</button><span class="msg" id="setMsg"></span></div>
+  </div>
+  <div class="panel"><h2><em>AUTO</em>Checkpoints ที่คำนวณอัตโนมัติ</h2><div id="cpl"></div>
+    <p class="sub">เกณฑ์คะแนน: ทุกการลดน้ำหนัก 1% เมื่อเทียบกับรอบก่อนหน้า = 10 คะแนน (คิดเป็นสัดส่วนจากน้ำหนักตั้งต้น ทำให้ยุติธรรมกับทุกคน) คะแนนรวมเป็นผลรวมสะสมทุกรอบ</p></div>
+  <div class="panel"><h2><em>PASS</em>เปลี่ยนรหัสผ่านผู้ดูแล</h2>
+    <div class="row" style="margin-top:0"><input id="npw" type="password" placeholder="รหัสผ่านใหม่ (อย่างน้อย 8 ตัว)" style="max-width:280px"><button class="btn g" id="pwBtn">เปลี่ยนรหัสผ่าน</button><span class="msg" id="pwMsg"></span></div></div>
+  <div class="panel"><h2><em>DATA</em>จัดการข้อมูล</h2>
+    <div class="row" style="margin-top:0"><button class="btn g" id="demo">โหลดข้อมูลตัวอย่าง</button><button class="btn g" id="reset">ล้างข้อมูลทั้งหมด</button></div></div>
+</section>
+</div>
+
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
+<script src="vendor/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+const KEY="fatfighting_v1";
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toISOString().slice(0,10);
+const addD=(s,d)=>{const x=new Date(s+"T00:00:00");x.setDate(x.getDate()+d);return x.toISOString().slice(0,10)};
+const diffD=(a,b)=>Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/864e5);
+const fmt=s=>new Date(s+"T00:00:00").toLocaleDateString("th-TH",{day:"numeric",month:"short",year:"2-digit"});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const SCORE_PER_PCT=10;
+function defState(){const y=new Date().getFullYear();return{set:{start:y+"-01-05",end:y+"-04-27",freq:4},people:[],logs:{}}}
+let S=defState();
+
+const CFG=window.FF_CONFIG||{};
+const sb=supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_KEY);
+let ADMIN=false,SNAP=null,LASTJ="",syncing=false,again=false;
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),5000)}
+/* flatten app state into table rows */
+function rows(s){const p={},c={};
+  s.people.forEach(x=>{p[x.id]={id:x.id,first_name:x.fn,last_name:x.ln,position:x.pos||"",start_weight:x.w0,start_waist:x.c0,photo:x.photo||""};
+    const L=s.logs[x.id]||{};
+    Object.keys(L).forEach(k=>{c[x.id+"|"+k]={participant_id:x.id,checkpoint:+k,weight:L[k].w,waist:L[k].c==null?null:L[k].c}})});
+  return{set:{id:1,start_date:s.set.start,end_date:s.set.end,freq_weeks:s.set.freq},p,c}}
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const chk=r=>{if(r.error)throw r.error};
+function save(){pushDiff()}
+async function pushDiff(){
+  if(!ADMIN)return;if(syncing){again=true;return}syncing=true;let failed=false;
+  try{do{again=false;const cur=rows(S),old=SNAP||{set:null,p:{},c:{}};
+    if(!same(cur.set,old.set))chk(await sb.from("settings").upsert(cur.set));
+    const delP=Object.keys(old.p).filter(id=>!cur.p[id]);
+    if(delP.length)chk(await sb.from("participants").delete().in("id",delP));
+    const upP=Object.values(cur.p).filter(r=>!same(r,old.p[r.id]));
+    if(upP.length)chk(await sb.from("participants").upsert(upP));
+    for(const k of Object.keys(old.c)){if(!cur.c[k]&&cur.p[old.c[k].participant_id])
+      chk(await sb.from("checkins").delete().eq("participant_id",old.c[k].participant_id).eq("checkpoint",old.c[k].checkpoint))}
+    const upC=Object.keys(cur.c).filter(k=>!same(cur.c[k],old.c[k])).map(k=>cur.c[k]);
+    if(upC.length)chk(await sb.from("checkins").upsert(upC,{onConflict:"participant_id,checkpoint"}));
+    SNAP=cur}while(again)}
+  catch(e){failed=true;toast("บันทึกไม่สำเร็จ: "+(e.message||e)+" — โหลดข้อมูลล่าสุดจากเซิร์ฟเวอร์")}
+  finally{syncing=false;if(failed){LASTJ="";setTimeout(()=>load().catch(()=>{}),0)}}}
+async function load(){
+  if(syncing||again)return;
+  const [a,b,c]=await Promise.all([
+    sb.from("settings").select("*").eq("id",1).maybeSingle(),
+    sb.from("participants").select("*").order("id"),
+    sb.from("checkins").select("*")]);
+  chk(a);chk(b);chk(c);
+  const ns={set:a.data?{start:a.data.start_date,end:a.data.end_date,freq:a.data.freq_weeks}:S.set,logs:{},
+    people:b.data.map(r=>({id:r.id,fn:r.first_name,ln:r.last_name,pos:r.position,w0:+r.start_weight,c0:+r.start_waist,photo:r.photo||""}))};
+  c.data.forEach(r=>{(ns.logs[r.participant_id]=ns.logs[r.participant_id]||{})[r.checkpoint]={w:+r.weight,c:r.waist==null?undefined:+r.waist}});
+  const j=JSON.stringify(ns);if(j===LASTJ)return;
+  LASTJ=j;S=ns;SNAP=rows(S);renderAll()}
+async function isAdmin(){const r=await sb.from("admins").select("user_id").maybeSingle();return !!r.data}
+function setRole(a){
+  if(!a)sb.auth.signOut().catch(()=>{});
+  ADMIN=a;document.body.classList.toggle("admin",a);
+  $("roleTag").textContent=a?"🛠 ADMIN":"👁 VIEWER · READ ONLY";$("roleTag").classList.toggle("a",a);
+  if(typeof closeDetail==="function")closeDetail();
+  document.querySelector('nav button[data-t="dash"]').click()}
+function refreshLoginUI(){
+  $("lgTitle").textContent="เข้าสู่ระบบผู้ดูแล";$("lcw").style.display="none";$("lgBtn").textContent="เข้าสู่ระบบ";
+  $("lgInfo").textContent="เฉพาะผู้ดูแลระบบ — ผู้ชมดูแดชบอร์ดได้โดยไม่ต้องเข้าสู่ระบบ"}
+
+function checkpoints(){
+  const {start,end,freq}=S.set;const out=[{i:0,date:start,label:"START"}];
+  if(!start||!end||end<=start)return out;
+  const step=freq*7;let d=step,i=1;
+  while(d<diffD(start,end)){out.push({i,date:addD(start,d),label:"R"+i});d+=step;i++}
+  out.push({i,date:end,label:"FINAL"});return out;
+}
+function avatar(name,id){let h=0;for(const c of name+id)h=(h*31+c.charCodeAt(0))%360;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},70%,32%)"/><stop offset="1" stop-color="hsl(${(h+50)%360},80%,14%)"/></linearGradient></defs><rect width="96" height="96" fill="url(#g)"/><circle cx="48" cy="35" r="16" fill="#e8eef5" opacity=".93"/><path d="M14 96c0-24 15-36 34-36s34 12 34 36z" fill="#e8eef5" opacity=".93"/></svg>`;
+  return "data:image/svg+xml;utf8,"+encodeURIComponent(svg)}
+function avatarOld(name,id){
+  let h=0;for(const c of name+id)h=(h*31+c.charCodeAt(0))%360;
+  const ini=name.trim().slice(0,1).toUpperCase();
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},80%,38%)"/><stop offset="1" stop-color="hsl(${(h+50)%360},85%,20%)"/></linearGradient></defs><rect width="96" height="96" fill="url(#g)"/><text x="48" y="62" font-size="44" font-family="Arial,sans-serif" font-weight="700" text-anchor="middle" fill="#fff">${esc(ini)}</text></svg>`;
+  return "data:image/svg+xml;utf8,"+encodeURIComponent(svg);
+}
+function stats(p,upTo=999){
+  const logs=S.logs[p.id]||{};const idx=Object.keys(logs).map(Number).filter(i=>i<=upTo).sort((a,b)=>a-b);
+  let prev=p.w0,pts=0,lastW=p.w0,lastC=p.c0;
+  idx.forEach(i=>{const w=logs[i].w;const inc=Math.max(0,(prev-w)/p.w0*100);pts+=inc*SCORE_PER_PCT;prev=w;lastW=w;lastC=logs[i].c??lastC});
+  return{pct:(p.w0-lastW)/p.w0*100,pts,lastW,lastC,done:idx.length,lost:p.w0-lastW,dc:p.c0-lastC};
+}
+
+/* ---------- render ---------- */
+function renderTL(){
+  const cps=checkpoints(),t=today(),a=cps[0].date,b=cps[cps.length-1].date,tot=Math.max(1,diffD(a,b));
+  const prog=Math.min(100,Math.max(0,diffD(a,t)/tot*100));
+  let nextSet=false;
+  const nodes=cps.map(c=>{const pos=diffD(a,c.date)/tot*100;let cl="";if(c.date<=t)cl="done";else if(!nextSet){cl="next";nextSet=true}
+    return `<div class="node ${cl}" style="left:${pos}%"><div class="l"><b>${c.label}</b>${fmt(c.date)}</div></div>`}).join("");
+  $("tl").innerHTML=`<div class="tl"><div class="fill" style="width:${prog}%"></div>${nodes}</div>
+  <div class="sub dg" style="font-size:11px">PROGRESS ${prog.toFixed(0)}% · ${fmt(a)} → ${fmt(b)}</div>`;
+}
+function renderStats(){
+  const ps=S.people.map(p=>({p,s:stats(p)}));
+  const lost=ps.reduce((x,y)=>x+y.s.lost,0);
+  const avg=ps.length?ps.reduce((x,y)=>x+y.s.pct,0)/ps.length:0;
+  const left=Math.max(0,diffD(today(),S.set.end));
+  $("stats").innerHTML=`
+  <div class="card"><small>ผู้เข้าแข่งขัน</small><div class="v">${ps.length}</div></div>
+  <div class="card o"><small>น้ำหนักรวมที่ลดได้ (กก.)</small><div class="v">${lost.toFixed(1)}</div></div>
+  <div class="card"><small>เฉลี่ย % ที่ลดลง</small><div class="v">${avg.toFixed(2)}%</div></div>
+  <div class="card o"><small>เหลืออีก (วัน)</small><div class="v">${left}</div></div>`;
+}
+let SORT="pts",CUR=null;
+const SORTS={pts:["คะแนน",s=>s.pts],pct:["% ลดลง",s=>s.pct],kg:["กก.ที่ลดได้",s=>s.lost],cm:["เอวที่ลดได้",s=>s.dc]};
+function ranked(key){const f=SORTS[key][1];const rows=S.people.map(p=>({p,s:stats(p)}));
+  rows.sort((a,b)=>f(b.s)-f(a.s)||b.s.pts-a.s.pts);
+  rows.forEach((x,i)=>{x.rank=(i>0&&Math.abs(f(x.s)-f(rows[i-1].s))<1e-9)?rows[i-1].rank:i+1});return rows}
+function prevRanks(){let mx=0;S.people.forEach(p=>Object.keys(S.logs[p.id]||{}).forEach(k=>mx=Math.max(mx,+k)));if(mx<2)return null;
+  const r=S.people.map(p=>({id:p.id,v:stats(p,mx-1).pts})).sort((a,b)=>b.v-a.v),m={};r.forEach((x,i)=>m[x.id]=i+1);return m}
+function tier(rank,s){if(!s.done)return['UNRANKED','t0'];if(rank===1)return['CHAMPION','t1'];if(rank===2)return['RUNNER-UP','t1'];if(rank===3)return['PODIUM','t1'];
+  if(s.pct>=5)return['ELITE','tg'];if(s.pct>=3)return['PRO','tg'];if(s.pct>=1)return['CONTENDER',''];return['ROOKIE','t0']}
+function mvHtml(prev,id,rank){if(!prev||!prev[id])return'<span class="mv eq">–</span>';const d=prev[id]-rank;return d>0?`<span class="mv up">▲${d}</span>`:d<0?`<span class="mv dn">▼${-d}</span>`:'<span class="mv eq">–</span>'}
+function renderLB(){
+  $("sortChips").innerHTML=Object.keys(SORTS).map(k=>`<div class="chip ${k===SORT?"on":""}" data-s="${k}">จัดอันดับตาม${SORTS[k][0]}</div>`).join("");
+  const rows=ranked(SORT);
+  if(!rows.length){$("podium").innerHTML="";$("lb").innerHTML='<div class="empty">ยังไม่มีผู้สมัคร — ไปที่แท็บ “ลงทะเบียน” หรือโหลดข้อมูลตัวอย่างในแท็บตั้งค่า</div>';return}
+  const prev=SORT==="pts"?prevRanks():null,f=SORTS[SORT][1];
+  const val=s=>SORT==="pts"?s.pts.toFixed(1)+" pts":SORT==="pct"?s.pct.toFixed(2)+"%":SORT==="kg"?s.lost.toFixed(1)+" กก.":s.dc.toFixed(1)+" ซม.";
+  const top=rows.filter(r=>r.rank<=3).slice(0,3),ord=top.length>=3?[top[1],top[0],top[2]]:top.length===2?[top[1],top[0]]:top;
+  $("podium").innerHTML=ord.map(r=>`<div class="pod p${r.rank}" data-id="${r.p.id}"><div class="rn">#${r.rank}</div><img class="av" src="${r.p.photo||avatar(r.p.fn,r.p.id)}" alt=""><div class="nm">${esc(r.p.fn)} ${esc(r.p.ln)}</div><div class="pts" style="font-size:15px">${val(r.s)}</div><span class="tier ${tier(r.rank,r.s)[1]}">${tier(r.rank,r.s)[0]}</span></div>`).join("");
+  const max=Math.max(1,...rows.map(r=>Math.max(0,f(r.s))));
+  $("lb").innerHTML=`<table><thead><tr><th>#</th><th>ผู้เข้าแข่งขัน</th><th>ระดับ</th><th>น้ำหนัก เริ่ม → ล่าสุด</th><th>% ลดลง</th><th>เอว (ซม.)</th><th>คะแนน</th></tr></thead><tbody>`+
+  rows.map(r=>{const{p,s}=r,t=tier(r.rank,s);
+    return `<tr class="click r${r.rank}" data-id="${p.id}"><td class="rk">${r.rank}<div>${mvHtml(prev,p.id,r.rank)}</div></td>
+    <td><div class="who"><img class="av" src="${p.photo||avatar(p.fn,p.id)}" alt=""><div>${esc(p.fn)} ${esc(p.ln)}<small>${esc(p.id)} · ${esc(p.pos||"-")}</small></div></div></td>
+    <td><span class="tier ${t[1]}">${t[0]}</span></td>
+    <td class="n">${p.w0.toFixed(1)} → ${s.lastW.toFixed(1)}</td>
+    <td><span class="pct">${s.pct.toFixed(2)}%</span></td>
+    <td class="n">${s.dc>0?"▼ ":s.dc<0?"▲ ":""}${Math.abs(s.dc).toFixed(1)}</td>
+    <td><div class="pts">${SORT==="pts"?s.pts.toFixed(1):val(s)}</div><div class="bar"><i style="width:${Math.max(0,f(s))/max*100}%"></i></div></td></tr>`}).join("")+"</tbody></table>";
+}
+function openDetail(id){
+  const p=S.people.find(x=>x.id===id);if(!p)return;CUR=id;
+  const all=ranked("pts"),me=all.find(x=>x.p.id===id),s=me.s,t=tier(me.rank,s),prev=prevRanks();
+  const cps=checkpoints(),logs=S.logs[id]||{},ks=Object.keys(logs).map(Number).sort((a,b)=>a-b);
+  const pts=[{i:0,w:p.w0}].concat(ks.map(k=>({i:k,w:logs[k].w})));
+  const W=560,H=170,pd=30,ws=pts.map(x=>x.w);let mn=Math.min(...ws),mx=Math.max(...ws);if(mx-mn<1){mx+=.5;mn-=.5}
+  const X=i=>pd+(cps.length>1?i/(cps.length-1):0)*(W-2*pd),Y=w=>pd+(mx-w)/(mx-mn)*(H-2*pd);
+  const path=pts.map((x,j)=>(j?"L":"M")+X(x.i).toFixed(1)+","+Y(x.w).toFixed(1)).join("");
+  const chart=`<div class="tw"><svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:420px;max-width:${W}px">`+
+   cps.map(c=>`<text x="${X(c.i)}" y="${H-6}" text-anchor="middle" font-size="10" style="fill:var(--mut);font-family:Orbitron,monospace">${c.i===0?"S":"R"+c.i}</text>`).join("")+
+   `<path d="${path}" fill="none" stroke-width="3" style="stroke:var(--g);filter:drop-shadow(0 0 4px #39ff1488)"/>`+
+   pts.map(x=>`<circle cx="${X(x.i)}" cy="${Y(x.w)}" r="5" style="fill:var(--o)"/><text x="${X(x.i)}" y="${Y(x.w)-10}" text-anchor="middle" font-size="11" style="fill:var(--tx);font-family:Orbitron,monospace">${x.w}</text>`).join("")+`</svg></div>`;
+  let pw=p.w0;const hist=ks.map(k=>{const l=logs[k],inc=Math.max(0,(pw-l.w)/p.w0*100);const row=`<tr><td class="n">R${k}</td><td>${cps.find(c=>c.i===k)?fmt(cps.find(c=>c.i===k).date):"-"}</td><td class="n">${l.w}</td><td class="n">${l.c??"-"}</td><td class="pct">${((p.w0-l.w)/p.w0*100).toFixed(2)}%</td><td class="pts" style="font-size:14px">+${(inc*SCORE_PER_PCT).toFixed(1)}</td></tr>`;pw=l.w;return row}).join("");
+  $("mbox").innerHTML=`<button class="mx" data-close="1">×</button>
+  <div class="mh"><img class="av" src="${p.photo||avatar(p.fn,p.id)}" alt=""><div style="flex:1;min-width:180px"><h3>${esc(p.fn)} ${esc(p.ln)}</h3><div class="sub">${esc(p.id)} · ${esc(p.pos||"-")}</div><div style="margin-top:8px"><span class="tier ${t[1]}">${t[0]}</span></div></div>
+  <div style="text-align:center"><div class="sub">อันดับ</div><div class="mrank">#${me.rank}</div><div>${mvHtml(prev,id,me.rank)}</div></div></div>
+  <div class="cards" style="margin-top:16px">
+   <div class="card"><small>คะแนนสะสม</small><div class="v">${s.pts.toFixed(1)}</div></div>
+   <div class="card o"><small>% น้ำหนักที่ลดลง</small><div class="v">${s.pct.toFixed(2)}%</div></div>
+   <div class="card"><small>น้ำหนักที่ลด (กก.)</small><div class="v">${s.lost.toFixed(1)}</div></div>
+   <div class="card o"><small>เอวที่ลด (ซม.)</small><div class="v">${s.dc.toFixed(1)}</div></div></div>
+  <div class="row" style="gap:24px"><div><div class="sub">น้ำหนักตั้งต้น → ล่าสุด</div><div class="dg" style="font-size:20px">${p.w0.toFixed(1)} → <span style="color:var(--g)">${s.lastW.toFixed(1)}</span> กก.</div></div>
+   <div><div class="sub">รอบเอวตั้งต้น → ล่าสุด</div><div class="dg" style="font-size:20px">${p.c0.toFixed(1)} → <span style="color:var(--g)">${s.lastC.toFixed(1)}</span> ซม.</div></div>
+   <div><div class="sub">รอบที่ชั่งแล้ว</div><div class="dg" style="font-size:20px">${s.done}/${cps.length-1}</div></div></div>
+  <h2 style="margin-top:18px"><em>TREND</em>กราฟน้ำหนักรายรอบ</h2>${chart}
+  <h2 style="margin-top:14px"><em>LOG</em>ประวัติการชั่งน้ำหนัก</h2>
+  ${ks.length?`<div class="tw"><table style="min-width:480px"><thead><tr><th>รอบ</th><th>วันที่</th><th>น้ำหนัก</th><th>เอว</th><th>% สะสม</th><th>คะแนนรอบนี้</th></tr></thead><tbody>${hist}</tbody></table></div>`:'<div class="empty">ยังไม่มีการบันทึกผล</div>'}
+  <div class="row"><label class="btn g" style="display:inline-block;margin:0;color:var(--tx);cursor:pointer">📷 เปลี่ยนรูปถ่าย<input id="mph" type="file" accept="image/*" style="display:none"></label>
+   ${p.photo?'<button class="btn g" data-rmphoto="1">ใช้อวตารอัตโนมัติ</button>':''}<button class="btn o" data-close="1">ปิด</button></div>`;
+  $("modal").classList.add("on");
+  $("mph").onchange=async e=>{const ph=await readPhoto(e.target.files[0]);if(ph){p.photo=ph;save();renderAll();openDetail(id)}};
+}
+function closeDetail(){$("modal").classList.remove("on");CUR=null}
+function renderLBOld(){
+  const rows=S.people.map(p=>({p,s:stats(p)})).sort((a,b)=>b.s.pts-a.s.pts||b.s.pct-a.s.pct);
+  const max=Math.max(1,...rows.map(r=>r.s.pts));
+  if(!rows.length){$("lb").innerHTML='<div class="empty">ยังไม่มีผู้สมัคร — ไปที่แท็บ “ลงทะเบียน” หรือโหลดข้อมูลตัวอย่างในแท็บตั้งค่า</div>';return}
+  $("lb").innerHTML=`<table><thead><tr><th>#</th><th>ผู้เข้าแข่งขัน</th><th>น้ำหนัก เริ่ม → ล่าสุด</th><th>% ลดลง</th><th>เอว (ซม.)</th><th>รอบที่ชั่ง</th><th>คะแนน</th></tr></thead><tbody>`+
+  rows.map((r,i)=>{const{p,s}=r;
+    return `<tr class="r${i+1}"><td class="rk">${i+1}</td>
+    <td><div class="who"><img class="av" src="${p.photo||avatar(p.fn,p.id)}" alt=""><div>${esc(p.fn)} ${esc(p.ln)}<small>${esc(p.id)} · ${esc(p.pos||"-")}</small></div></div></td>
+    <td class="n">${p.w0.toFixed(1)} → ${s.lastW.toFixed(1)}</td>
+    <td><span class="pct">${s.pct.toFixed(2)}%</span></td>
+    <td class="n">${s.dc>0?"▼ ":s.dc<0?"▲ ":""}${Math.abs(s.dc).toFixed(1)}</td>
+    <td class="n">${s.done}</td>
+    <td><div class="pts">${s.pts.toFixed(1)}</div><div class="bar"><i style="width:${s.pts/max*100}%"></i></div></td></tr>`}).join("")+"</tbody></table>";
+}
+function renderPeople(){
+  if(!S.people.length){$("plist").innerHTML='<div class="empty">ยังไม่มีข้อมูล</div>';return}
+  $("plist").innerHTML=`<table><thead><tr><th>รหัส</th><th>ชื่อ</th><th>ตำแหน่ง/สังกัด</th><th>น้ำหนักเริ่ม</th><th>เอวเริ่ม</th><th></th></tr></thead><tbody>`+
+  S.people.map(p=>`<tr><td class="n" style="color:var(--g)">${esc(p.id)}</td><td><div class="who"><img class="av" src="${p.photo||avatar(p.fn,p.id)}" alt="">${esc(p.fn)} ${esc(p.ln)}</div></td><td>${esc(p.pos||"-")}</td><td class="n">${p.w0}</td><td class="n">${p.c0}</td><td><button class="btn g" data-del="${p.id}" style="padding:6px 10px;font-size:12px">ลบ</button></td></tr>`).join("")+"</tbody></table>";
+}
+function renderCheckSel(){
+  const cp=$("cp").value;
+  $("cp").innerHTML=S.people.map(p=>`<option value="${p.id}">${esc(p.id)} – ${esc(p.fn)} ${esc(p.ln)}</option>`).join("")||'<option value="">— ยังไม่มีผู้สมัคร —</option>';
+  if(cp&&S.people.some(p=>p.id===cp))$("cp").value=cp;
+  const cc=$("cc").value,cps=checkpoints().slice(1);
+  $("cc").innerHTML=cps.map(c=>`<option value="${c.i}">${c.label==="FINAL"?"รอบสุดท้าย":"รอบที่ "+c.i} · ${fmt(c.date)}</option>`).join("");
+  if(cc&&cps.some(c=>String(c.i)===cc))$("cc").value=cc;
+  renderPrev();renderHist();
+}
+function renderPrev(){
+  const p=S.people.find(x=>x.id===$("cp").value);if(!p){$("prev").innerHTML='<span class="sub">เลือกผู้เข้าแข่งขัน</span>';return}
+  const w=parseFloat($("cw").value),c=parseFloat($("cwa").value);
+  const i=+$("cc").value,logs=S.logs[p.id]||{};
+  let prev=p.w0;for(let k=i-1;k>=1;k--)if(logs[k]){prev=logs[k].w;break}
+  const pct=isNaN(w)?null:(p.w0-w)/p.w0*100,inc=isNaN(w)?null:Math.max(0,(prev-w)/p.w0*100);
+  $("prev").innerHTML=`<div><small class="sub">% น้ำหนักที่ลดลง (จากตั้งต้น ${p.w0} กก.)</small><div class="big">${pct===null?"--":pct.toFixed(2)+"%"}</div></div>
+  <div><small class="sub">คะแนนที่ได้รอบนี้</small><div class="big" style="color:var(--g)">${inc===null?"--":"+"+(inc*SCORE_PER_PCT).toFixed(1)}</div></div>
+  <div><small class="sub">เอวเปลี่ยนแปลง</small><div class="big" style="font-size:24px">${isNaN(c)?"--":(p.c0-c>=0?"▼ ":"▲ ")+Math.abs(p.c0-c).toFixed(1)+" ซม."}</div></div>`;
+}
+function renderHist(){
+  const p=S.people.find(x=>x.id===$("cp").value),cps=checkpoints();
+  if(!p){$("hist").innerHTML='<div class="empty">—</div>';return}
+  const logs=S.logs[p.id]||{},ks=Object.keys(logs).map(Number).sort((a,b)=>a-b);
+  if(!ks.length){$("hist").innerHTML='<div class="empty">ยังไม่มีการบันทึกผล</div>';return}
+  $("hist").innerHTML=`<table><thead><tr><th>รอบ</th><th>วันที่</th><th>น้ำหนัก</th><th>เอว</th><th>% ลด (สะสม)</th></tr></thead><tbody>`+
+  ks.map(k=>{const l=logs[k],c=cps.find(x=>x.i===k);return `<tr><td class="n">R${k}</td><td>${c?fmt(c.date):"-"}</td><td class="n">${l.w}</td><td class="n">${l.c??"-"}</td><td class="pct">${((p.w0-l.w)/p.w0*100).toFixed(2)}%</td></tr>`}).join("")+"</tbody></table>";
+}
+function renderSet(){
+  $("sd").value=S.set.start;$("ed").value=S.set.end;
+  document.querySelectorAll("#fq .chip").forEach(c=>c.classList.toggle("on",+c.dataset.f===S.set.freq));
+  renderCPL();
+}
+function renderCPL(){
+  const cps=checkpoints(),t=today();
+  $("cpl").innerHTML=cps.map(c=>`<span class="chk ${c.date<=t?"ok":""}">${c.label} · ${fmt(c.date)}</span>`).join("")+`<div class="sub" style="margin-top:8px">รวม ${cps.length-1} รอบการชั่งน้ำหนัก (ไม่นับวันเริ่มต้น)</div>`;
+}
+function renderAll(){const m=$("modal").classList.contains("on")&&CUR;renderStats();renderTL();renderLB();renderPeople();renderCheckSel();renderSet()}
+
+/* ---------- events ---------- */
+$("nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="logout"){setRole(false);return}if(b.dataset.t==="login")refreshLoginUI();
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.id===b.dataset.t));renderAll()};
+document.querySelectorAll("#fq .chip").forEach(c=>c.onclick=()=>{S.set.freq=+c.dataset.f;renderSet();
+  S.set.start=$("sd").value||S.set.start;S.set.end=$("ed").value||S.set.end;renderCPL()});
+["sd","ed"].forEach(id=>$(id).onchange=()=>{S.set.start=$("sd").value;S.set.end=$("ed").value;renderCPL()});
+$("setBtn").onclick=()=>{
+  const s=$("sd").value,e=$("ed").value;
+  if(!s||!e||e<=s){$("setMsg").style.color="var(--r)";$("setMsg").textContent="วันที่สิ้นสุดต้องอยู่หลังวันที่เริ่มต้น";return}
+  S.set.start=s;S.set.end=e;S.logs=S.logs;save();$("setMsg").style.color="var(--g)";$("setMsg").textContent="✔ บันทึกแล้ว — สร้าง Checkpoints ใหม่เรียบร้อย";renderAll()};
+
+function nextId(){const y=(S.set.start||today()).slice(0,4);let n=0;
+  S.people.forEach(p=>{const m=p.id.match(/^FF-\d{4}-(\d+)$/);if(m)n=Math.max(n,+m[1])});
+  return `FF-${y}-${String(n+1).padStart(3,"0")}`}
+function readPhoto(f){return new Promise(res=>{
+  if(!f)return res("");const r=new FileReader();
+  r.onload=()=>{const im=new Image();im.onload=()=>{const s=96,cv=document.createElement("canvas");cv.width=cv.height=s;
+    const m=Math.min(im.width,im.height);cv.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s);res(cv.toDataURL("image/jpeg",.75))};im.onerror=()=>res("");im.src=r.result};
+  r.onerror=()=>res("");r.readAsDataURL(f)})}
+$("regBtn").onclick=async()=>{
+  const fn=$("fn").value.trim(),ln=$("ln").value.trim(),w0=parseFloat($("w0").value),c0=parseFloat($("c0").value);
+  const m=$("regMsg");m.style.color="var(--r)";
+  if(!fn||!ln||isNaN(w0)||isNaN(c0)){m.textContent="กรุณากรอกชื่อ นามสกุล น้ำหนัก และรอบเอวให้ครบ";return}
+  const photo=await readPhoto($("ph").files[0]);
+  const id=nextId();S.people.push({id,fn,ln,pos:$("pos").value.trim(),w0,c0,photo});save();
+  ["fn","ln","pos","w0","c0","ph"].forEach(x=>$(x).value="");
+  m.style.color="var(--g)";m.textContent=`✔ ลงทะเบียนสำเร็จ — รหัสประจำตัว ${id}`;renderAll()};
+$("plist").onclick=e=>{const id=e.target.dataset.del;if(!id)return;
+  if(!confirm("ลบผู้สมัครและผลการชั่งน้ำหนักทั้งหมดของคนนี้?"))return;
+  S.people=S.people.filter(p=>p.id!==id);delete S.logs[id];save();renderAll()};
+["cp","cc"].forEach(id=>$(id).onchange=()=>{renderPrev();renderHist()});
+["cw","cwa"].forEach(id=>$(id).oninput=renderPrev);
+$("chkBtn").onclick=()=>{
+  const id=$("cp").value,i=+$("cc").value,w=parseFloat($("cw").value),c=parseFloat($("cwa").value),m=$("chkMsg");
+  m.style.color="var(--r)";
+  if(!id||!i){m.textContent="กรุณาเลือกผู้เข้าแข่งขันและรอบ";return}
+  if(isNaN(w)){m.textContent="กรุณากรอกน้ำหนักล่าสุด";return}
+  (S.logs[id]=S.logs[id]||{})[i]={w,c:isNaN(c)?undefined:c};save();
+  $("cw").value="";$("cwa").value="";m.style.color="var(--g)";m.textContent="✔ บันทึกผลเรียบร้อย — คะแนนอัปเดตแล้ว";renderAll()};
+$("sortChips").onclick=e=>{const c=e.target.closest(".chip");if(c){SORT=c.dataset.s;renderLB()}};
+["lb","podium"].forEach(x=>$(x).onclick=e=>{const r=e.target.closest("[data-id]");if(r)openDetail(r.dataset.id)});
+$("plist").addEventListener("click",e=>{if(e.target.dataset.del)return;const img=e.target.closest(".av");if(img){const tr=img.closest("tr");const id=tr&&tr.querySelector("td").textContent;if(id)openDetail(id)}});
+$("modal").onclick=e=>{if(e.target.id==="modal"||e.target.dataset.close)closeDetail();if(e.target.dataset.rmphoto){const p=S.people.find(x=>x.id===CUR);if(p){p.photo="";save();renderAll();openDetail(CUR)}}};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDetail()});
+$("reset").onclick=()=>{if(confirm("ล้างข้อมูลทั้งหมด?")){S=defState();save();renderAll()}};
+$("demo").onclick=()=>{
+  const y=new Date().getFullYear(),st=addD(today(),-60);
+  S={set:{start:st,end:addD(st,112),freq:2},people:[],logs:{}};
+  const d=[["สมชาย","ใจดี","ฝ่ายบัญชี",92.5,104],["วิภา","รักสุข","ฝ่ายขาย",78.2,92],["ธนากร","แข็งแรง","IT Support",101.4,112],["พิมพ์ใจ","สว่างวัน","ฝ่ายบุคคล",66.8,81],["อานนท์","มั่นคง","คลังสินค้า",88.0,99]];
+  const rate=[.011,.016,.009,.013,.014];
+  d.forEach((x,k)=>{const id=`FF-${st.slice(0,4)}-${String(k+1).padStart(3,"0")}`;
+    S.people.push({id,fn:x[0],ln:x[1],pos:x[2],w0:x[3],c0:x[4],photo:""});S.logs[id]={};
+    let w=x[3],c=x[4];for(let i=1;i<=4;i++){w-=x[3]*rate[k]*(0.8+((k*7+i*3)%5)/10);c-=1.1*(0.8+((k+i)%4)/5);S.logs[id][i]={w:+w.toFixed(1),c:+c.toFixed(1)}}});
+  save();renderAll()};
+$("lgBtn").onclick=async()=>{
+  const m=$("lgMsg");m.style.color="var(--r)";m.textContent="กำลังตรวจสอบ…";
+  const {error}=await sb.auth.signInWithPassword({email:$("lu").value.trim(),password:$("lp").value});
+  if(error){m.textContent=error.status===429?"ลองบ่อยเกินไป กรุณารอสักครู่":"อีเมลหรือรหัสผ่านไม่ถูกต้อง";return}
+  if(!(await isAdmin())){await sb.auth.signOut();m.textContent="บัญชีนี้ไม่มีสิทธิ์ผู้ดูแล";return}
+  $("lp").value="";m.textContent="";setRole(true)};
+["lu","lp"].forEach(id=>$(id).onkeydown=e=>{if(e.key==="Enter")$("lgBtn").click()});
+$("pwBtn").onclick=async()=>{const pw=$("npw").value,m=$("pwMsg");
+  if(pw.length<8){m.style.color="var(--r)";m.textContent="อย่างน้อย 8 ตัวอักษร";return}
+  const {error}=await sb.auth.updateUser({password:pw});
+  if(error){m.style.color="var(--r)";m.textContent="ไม่สำเร็จ: "+error.message;return}
+  $("npw").value="";m.style.color="var(--g)";m.textContent="✔ เปลี่ยนรหัสผ่านแล้ว"};
+renderAll();refreshLoginUI();
+(async()=>{
+  const tag=$("syncTag");
+  const ok=()=>{tag.textContent="● LIVE SYNC";tag.style.color="var(--g)"},bad=()=>{tag.textContent="OFFLINE";tag.style.color="var(--r)"};
+  try{await load();ok()}catch(e){bad()}
+  try{const {data}=await sb.auth.getSession();if(data.session&&await isAdmin())setRole(true)}catch(e){}
+  let tm;sb.channel("ff").on("postgres_changes",{event:"*",schema:"public"},()=>{clearTimeout(tm);tm=setTimeout(()=>load().then(ok).catch(bad),500)}).subscribe();
+  setInterval(()=>{if(!document.hidden)load().then(ok).catch(bad)},30000);
+})();
+</script>
+</body>
+</html>
