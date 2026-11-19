@@ -136,6 +136,8 @@ body.judge .vonly{display:none!important}
       <div><label>ตำแหน่ง / สังกัด</label><input id="pos"></div>
       <div><label>น้ำหนักตั้งต้น (กก.)</label><input id="w0" type="number" step="0.1" min="20"></div>
       <div><label>รอบเอวตั้งต้น (ซม.)</label><input id="c0" type="number" step="0.1" min="30"></div>
+      <div><label>ส่วนสูง (ซม.)</label><input id="h0" type="number" step="0.1" min="100" max="250"></div>
+      <div><label>BMI ตั้งต้น (คำนวณอัตโนมัติ)</label><input id="b0" disabled placeholder="--"></div>
       <div><label>รูปถ่าย (ไม่ใส่ = อวตารอัตโนมัติ)</label><input id="ph" type="file" accept="image/*"></div>
     </div>
     <div class="row"><button class="btn" id="regBtn">ลงทะเบียน</button><span class="msg" id="regMsg"></span></div>
@@ -176,7 +178,7 @@ body.judge .vonly{display:none!important}
       <div><label>วันที่เริ่มต้นโครงการ</label><input id="sd" type="date"></div>
       <div><label>วันที่สิ้นสุดโครงการ</label><input id="ed" type="date"></div>
       <div><label>ความถี่รอบการชั่งน้ำหนัก</label>
-        <div class="chips" id="fq"><div class="chip" data-f="2">ทุก 2 สัปดาห์</div><div class="chip" data-f="4">ทุก 4 สัปดาห์</div></div></div>
+        <div class="chips" id="fq"><div class="chip" data-f="2">ทุก 2 สัปดาห์</div><div class="chip" data-f="3">ทุก 3 สัปดาห์</div><div class="chip" data-f="4">ทุก 4 สัปดาห์</div></div></div>
     </div>
     <div class="row"><button class="btn" id="setBtn">บันทึกการตั้งค่า</button><span class="msg" id="setMsg"></span></div>
   </div>
@@ -210,7 +212,7 @@ let ADMIN=false,ROLE=null,SNAP=null,LASTJ="",syncing=false,again=false;
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),5000)}
 /* flatten app state into table rows */
 function rows(s){const p={},c={};
-  s.people.forEach(x=>{p[x.id]={id:x.id,first_name:x.fn,last_name:x.ln,position:x.pos||"",start_weight:x.w0,start_waist:x.c0,photo:x.photo||""};
+  s.people.forEach(x=>{p[x.id]={id:x.id,first_name:x.fn,last_name:x.ln,position:x.pos||"",start_weight:x.w0,start_waist:x.c0,height_cm:x.h0==null?null:x.h0,photo:x.photo||""};
     const L=s.logs[x.id]||{};
     Object.keys(L).forEach(k=>{c[x.id+"|"+k]={participant_id:x.id,checkpoint:+k,weight:L[k].w,waist:L[k].c==null?null:L[k].c}})});
   return{set:{id:1,start_date:s.set.start,end_date:s.set.end,freq_weeks:s.set.freq},p,c}}
@@ -240,7 +242,7 @@ async function load(){
     sb.from("checkins").select("*")]);
   chk(a);chk(b);chk(c);
   const ns={set:a.data?{start:a.data.start_date,end:a.data.end_date,freq:a.data.freq_weeks}:S.set,logs:{},
-    people:b.data.map(r=>({id:r.id,fn:r.first_name,ln:r.last_name,pos:r.position,w0:+r.start_weight,c0:+r.start_waist,photo:r.photo||""}))};
+    people:b.data.map(r=>({id:r.id,fn:r.first_name,ln:r.last_name,pos:r.position,w0:+r.start_weight,c0:+r.start_waist,h0:r.height_cm==null?null:+r.height_cm,photo:r.photo||""}))};
   c.data.forEach(r=>{(ns.logs[r.participant_id]=ns.logs[r.participant_id]||{})[r.checkpoint]={w:+r.weight,c:r.waist==null?undefined:+r.waist}});
   const j=JSON.stringify(ns);if(j===LASTJ)return;
   LASTJ=j;S=ns;SNAP=rows(S);renderAll()}
@@ -287,11 +289,16 @@ function avatarOld(name,id){
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},80%,38%)"/><stop offset="1" stop-color="hsl(${(h+50)%360},85%,20%)"/></linearGradient></defs><rect width="96" height="96" fill="url(#g)"/><text x="48" y="62" font-size="44" font-family="Arial,sans-serif" font-weight="700" text-anchor="middle" fill="#fff">${esc(ini)}</text></svg>`;
   return "data:image/svg+xml;utf8,"+encodeURIComponent(svg);
 }
+function bmi(w,h){return h?w/((h/100)*(h/100)):null}
+function fb(b){return b==null||isNaN(b)?"–":b.toFixed(1)}
+/* เกณฑ์ BMI สำหรับคนเอเชีย/ไทย (กรมอนามัย) */
+function bmiCat(b){if(b==null||isNaN(b))return["-","var(--mut)"];if(b<18.5)return["น้ำหนักน้อย","#4aa8ff"];if(b<23)return["สมส่วน","var(--g)"];if(b<25)return["น้ำหนักเกิน","#ffd400"];if(b<30)return["อ้วนระดับ 1","var(--o)"];return["อ้วนระดับ 2","var(--r)"]}
+function bmiHtml(w,h){if(!h||w==null||isNaN(w))return"--";const b=bmi(w,h),c=bmiCat(b);return`<span style="color:${c[1]}">${b.toFixed(1)}</span> <small style="font-size:11px;color:${c[1]}">${c[0]}</small>`}
 function stats(p,upTo=999){
   const logs=S.logs[p.id]||{};const idx=Object.keys(logs).map(Number).filter(i=>i<=upTo).sort((a,b)=>a-b);
   let prev=p.w0,pts=0,lastW=p.w0,lastC=p.c0;
   idx.forEach(i=>{const w=logs[i].w;const inc=Math.max(0,(prev-w)/p.w0*100);pts+=inc*SCORE_PER_PCT;prev=w;lastW=w;lastC=logs[i].c??lastC});
-  return{pct:(p.w0-lastW)/p.w0*100,pts,lastW,lastC,done:idx.length,lost:p.w0-lastW,dc:p.c0-lastC};
+  return{pct:(p.w0-lastW)/p.w0*100,pts,lastW,lastC,done:idx.length,lost:p.w0-lastW,dc:p.c0-lastC,bmi0:bmi(p.w0,p.h0),bmi:bmi(lastW,p.h0)};
 }
 
 /* ---------- render ---------- */
@@ -316,7 +323,7 @@ function renderStats(){
   <div class="card o"><small>เหลืออีก (วัน)</small><div class="v">${left}</div></div>`;
 }
 let SORT="pts",CUR=null;
-const SORTS={pts:["คะแนน",s=>s.pts],pct:["% ลดลง",s=>s.pct],kg:["กก.ที่ลดได้",s=>s.lost],cm:["เอวที่ลดได้",s=>s.dc]};
+const SORTS={pts:["คะแนน",s=>s.pts],pct:["% ลดลง",s=>s.pct],kg:["กก.ที่ลดได้",s=>s.lost],cm:["เอวที่ลดได้",s=>s.dc],bmi:["BMI ที่ลดลง",s=>s.bmi0==null?-99:s.bmi0-s.bmi]};
 function ranked(key){const f=SORTS[key][1];const rows=S.people.map(p=>({p,s:stats(p)}));
   rows.sort((a,b)=>f(b.s)-f(a.s)||b.s.pts-a.s.pts);
   rows.forEach((x,i)=>{x.rank=(i>0&&Math.abs(f(x.s)-f(rows[i-1].s))<1e-9)?rows[i-1].rank:i+1});return rows}
@@ -330,17 +337,18 @@ function renderLB(){
   const rows=ranked(SORT);
   if(!rows.length){$("podium").innerHTML="";$("lb").innerHTML='<div class="empty">ยังไม่มีผู้สมัคร — ไปที่แท็บ “ลงทะเบียน” หรือโหลดข้อมูลตัวอย่างในแท็บตั้งค่า</div>';return}
   const prev=SORT==="pts"?prevRanks():null,f=SORTS[SORT][1];
-  const val=s=>SORT==="pts"?s.pts.toFixed(1)+" pts":SORT==="pct"?s.pct.toFixed(2)+"%":SORT==="kg"?s.lost.toFixed(1)+" กก.":s.dc.toFixed(1)+" ซม.";
+  const val=s=>SORT==="pts"?s.pts.toFixed(1)+" pts":SORT==="pct"?s.pct.toFixed(2)+"%":SORT==="kg"?s.lost.toFixed(1)+" กก.":SORT==="bmi"?(s.bmi0==null?"-":(s.bmi0-s.bmi).toFixed(2)+" BMI"):s.dc.toFixed(1)+" ซม.";
   const top=rows.filter(r=>r.rank<=3).slice(0,3),ord=top.length>=3?[top[1],top[0],top[2]]:top.length===2?[top[1],top[0]]:top;
   $("podium").innerHTML=ord.map(r=>`<div class="pod p${r.rank}" data-id="${r.p.id}"><div class="rn">#${r.rank}</div><img class="av" src="${r.p.photo||avatar(r.p.fn,r.p.id)}" alt=""><div class="nm">${esc(r.p.fn)} ${esc(r.p.ln)}</div><div class="pts" style="font-size:15px">${val(r.s)}</div><span class="tier ${tier(r.rank,r.s)[1]}">${tier(r.rank,r.s)[0]}</span></div>`).join("");
   const max=Math.max(1,...rows.map(r=>Math.max(0,f(r.s))));
-  $("lb").innerHTML=`<table><thead><tr><th>#</th><th>ผู้เข้าแข่งขัน</th><th>ระดับ</th><th>น้ำหนัก เริ่ม → ล่าสุด</th><th>% ลดลง</th><th>เอว (ซม.)</th><th>คะแนน</th></tr></thead><tbody>`+
+  $("lb").innerHTML=`<table><thead><tr><th>#</th><th>ผู้เข้าแข่งขัน</th><th>ระดับ</th><th>น้ำหนัก เริ่ม → ล่าสุด</th><th>% ลดลง</th><th>BMI เริ่ม → ล่าสุด</th><th>เอว (ซม.)</th><th>คะแนน</th></tr></thead><tbody>`+
   rows.map(r=>{const{p,s}=r,t=tier(r.rank,s);
     return `<tr class="click r${r.rank}" data-id="${p.id}"><td class="rk">${r.rank}<div>${mvHtml(prev,p.id,r.rank)}</div></td>
     <td><div class="who"><img class="av" src="${p.photo||avatar(p.fn,p.id)}" alt=""><div>${esc(p.fn)} ${esc(p.ln)}<small>${esc(p.id)} · ${esc(p.pos||"-")}</small></div></div></td>
     <td><span class="tier ${t[1]}">${t[0]}</span></td>
     <td class="n">${p.w0.toFixed(1)} → ${s.lastW.toFixed(1)}</td>
     <td><span class="pct">${s.pct.toFixed(2)}%</span></td>
+    <td class="n" style="white-space:nowrap">${p.h0?fb(s.bmi0)+" → ":"– "}${bmiHtml(s.lastW,p.h0)}</td>
     <td class="n">${s.dc>0?"▼ ":s.dc<0?"▲ ":""}${Math.abs(s.dc).toFixed(1)}</td>
     <td><div class="pts">${SORT==="pts"?s.pts.toFixed(1):val(s)}</div><div class="bar"><i style="width:${Math.max(0,f(s))/max*100}%"></i></div></td></tr>`}).join("")+"</tbody></table>";
 }
@@ -364,9 +372,11 @@ function openDetail(id){
    <div class="card"><small>คะแนนสะสม</small><div class="v">${s.pts.toFixed(1)}</div></div>
    <div class="card o"><small>% น้ำหนักที่ลดลง</small><div class="v">${s.pct.toFixed(2)}%</div></div>
    <div class="card"><small>น้ำหนักที่ลด (กก.)</small><div class="v">${s.lost.toFixed(1)}</div></div>
-   <div class="card o"><small>เอวที่ลด (ซม.)</small><div class="v">${s.dc.toFixed(1)}</div></div></div>
+   <div class="card o"><small>เอวที่ลด (ซม.)</small><div class="v">${s.dc.toFixed(1)}</div></div>
+   <div class="card"><small>BMI ปัจจุบัน</small><div class="v" style="color:${bmiCat(s.bmi)[1]}">${fb(s.bmi)}</div><small style="color:${bmiCat(s.bmi)[1]}">${bmiCat(s.bmi)[0]}</small></div></div>
   <div class="row" style="gap:24px"><div><div class="sub">น้ำหนักตั้งต้น → ล่าสุด</div><div class="dg" style="font-size:20px">${p.w0.toFixed(1)} → <span style="color:var(--g)">${s.lastW.toFixed(1)}</span> กก.</div></div>
    <div><div class="sub">รอบเอวตั้งต้น → ล่าสุด</div><div class="dg" style="font-size:20px">${p.c0.toFixed(1)} → <span style="color:var(--g)">${s.lastC.toFixed(1)}</span> ซม.</div></div>
+   <div><div class="sub">ส่วนสูง · BMI ตั้งต้น → ล่าสุด</div><div class="dg" style="font-size:20px">${p.h0?p.h0+" ซม. · ":"ยังไม่ระบุส่วนสูง · "}${fb(s.bmi0)} → <span style="color:${bmiCat(s.bmi)[1]}">${fb(s.bmi)}</span></div></div>
    <div><div class="sub">รอบที่ชั่งแล้ว</div><div class="dg" style="font-size:20px">${s.done}/${cps.length-1}</div></div></div>
   <h2 style="margin-top:18px"><em>TREND</em>กราฟน้ำหนักรายรอบ</h2>${chart}
   <h2 style="margin-top:14px"><em>LOG</em>ประวัติการชั่งน้ำหนัก</h2>
@@ -377,24 +387,10 @@ function openDetail(id){
   $("mph").onchange=async e=>{const ph=await readPhoto(e.target.files[0]);if(ph){p.photo=ph;save();renderAll();openDetail(id)}};
 }
 function closeDetail(){$("modal").classList.remove("on");CUR=null}
-function renderLBOld(){
-  const rows=S.people.map(p=>({p,s:stats(p)})).sort((a,b)=>b.s.pts-a.s.pts||b.s.pct-a.s.pct);
-  const max=Math.max(1,...rows.map(r=>r.s.pts));
-  if(!rows.length){$("lb").innerHTML='<div class="empty">ยังไม่มีผู้สมัคร — ไปที่แท็บ “ลงทะเบียน” หรือโหลดข้อมูลตัวอย่างในแท็บตั้งค่า</div>';return}
-  $("lb").innerHTML=`<table><thead><tr><th>#</th><th>ผู้เข้าแข่งขัน</th><th>น้ำหนัก เริ่ม → ล่าสุด</th><th>% ลดลง</th><th>เอว (ซม.)</th><th>รอบที่ชั่ง</th><th>คะแนน</th></tr></thead><tbody>`+
-  rows.map((r,i)=>{const{p,s}=r;
-    return `<tr class="r${i+1}"><td class="rk">${i+1}</td>
-    <td><div class="who"><img class="av" src="${p.photo||avatar(p.fn,p.id)}" alt=""><div>${esc(p.fn)} ${esc(p.ln)}<small>${esc(p.id)} · ${esc(p.pos||"-")}</small></div></div></td>
-    <td class="n">${p.w0.toFixed(1)} → ${s.lastW.toFixed(1)}</td>
-    <td><span class="pct">${s.pct.toFixed(2)}%</span></td>
-    <td class="n">${s.dc>0?"▼ ":s.dc<0?"▲ ":""}${Math.abs(s.dc).toFixed(1)}</td>
-    <td class="n">${s.done}</td>
-    <td><div class="pts">${s.pts.toFixed(1)}</div><div class="bar"><i style="width:${s.pts/max*100}%"></i></div></td></tr>`}).join("")+"</tbody></table>";
-}
 function renderPeople(){
   if(!S.people.length){$("plist").innerHTML='<div class="empty">ยังไม่มีข้อมูล</div>';return}
-  $("plist").innerHTML=`<table><thead><tr><th>รหัส</th><th>ชื่อ</th><th>ตำแหน่ง/สังกัด</th><th>น้ำหนักเริ่ม</th><th>เอวเริ่ม</th><th></th></tr></thead><tbody>`+
-  S.people.map(p=>`<tr><td class="n" style="color:var(--g)">${esc(p.id)}</td><td><div class="who"><img class="av" src="${p.photo||avatar(p.fn,p.id)}" alt="">${esc(p.fn)} ${esc(p.ln)}</div></td><td>${esc(p.pos||"-")}</td><td class="n">${p.w0}</td><td class="n">${p.c0}</td><td><button class="btn g" data-del="${p.id}" style="padding:6px 10px;font-size:12px">ลบ</button></td></tr>`).join("")+"</tbody></table>";
+  $("plist").innerHTML=`<table><thead><tr><th>รหัส</th><th>ชื่อ</th><th>ตำแหน่ง/สังกัด</th><th>น้ำหนักเริ่ม</th><th>เอวเริ่ม</th><th>ส่วนสูง (ซม.)</th><th>BMI เริ่ม</th><th></th></tr></thead><tbody>`+
+  S.people.map(p=>`<tr><td class="n" style="color:var(--g)">${esc(p.id)}</td><td><div class="who"><img class="av" src="${p.photo||avatar(p.fn,p.id)}" alt="">${esc(p.fn)} ${esc(p.ln)}</div></td><td>${esc(p.pos||"-")}</td><td class="n">${p.w0}</td><td class="n">${p.c0}</td><td class="n" style="white-space:nowrap">${p.h0??"-"} <button class="btn g sm" data-h="${p.id}" title="แก้ไขส่วนสูง">✎</button></td><td class="n">${bmiHtml(p.w0,p.h0)}</td><td><button class="btn g" data-del="${p.id}" style="padding:6px 10px;font-size:12px">ลบ</button></td></tr>`).join("")+"</tbody></table>";
 }
 function renderCheckSel(){
   const cp=$("cp").value;
@@ -413,6 +409,7 @@ function renderPrev(){
   const pct=isNaN(w)?null:(p.w0-w)/p.w0*100,inc=isNaN(w)?null:Math.max(0,(prev-w)/p.w0*100);
   $("prev").innerHTML=`<div><small class="sub">% น้ำหนักที่ลดลง (จากตั้งต้น ${p.w0} กก.)</small><div class="big">${pct===null?"--":pct.toFixed(2)+"%"}</div></div>
   <div><small class="sub">คะแนนที่ได้รอบนี้</small><div class="big" style="color:var(--g)">${inc===null?"--":"+"+(inc*SCORE_PER_PCT).toFixed(1)}</div></div>
+  <div><small class="sub">BMI (ส่วนสูง ${p.h0||"-"} ซม.)</small><div class="big" style="font-size:24px">${bmiHtml(w,p.h0)}</div></div>
   <div><small class="sub">เอวเปลี่ยนแปลง</small><div class="big" style="font-size:24px">${isNaN(c)?"--":(p.c0-c>=0?"▼ ":"▲ ")+Math.abs(p.c0-c).toFixed(1)+" ซม."}</div></div>`;
 }
 function renderHist(){
@@ -455,12 +452,13 @@ function readPhoto(f){return new Promise(res=>{
     const m=Math.min(im.width,im.height);cv.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s);res(cv.toDataURL("image/jpeg",.75))};im.onerror=()=>res("");im.src=r.result};
   r.onerror=()=>res("");r.readAsDataURL(f)})}
 $("regBtn").onclick=async()=>{
-  const fn=$("fn").value.trim(),ln=$("ln").value.trim(),w0=parseFloat($("w0").value),c0=parseFloat($("c0").value);
+  const fn=$("fn").value.trim(),ln=$("ln").value.trim(),w0=parseFloat($("w0").value),c0=parseFloat($("c0").value),h0=parseFloat($("h0").value);
   const m=$("regMsg");m.style.color="var(--r)";
-  if(!fn||!ln||isNaN(w0)||isNaN(c0)){m.textContent="กรุณากรอกชื่อ นามสกุล น้ำหนัก และรอบเอวให้ครบ";return}
+  if(!fn||!ln||isNaN(w0)||isNaN(c0)||isNaN(h0)){m.textContent="กรุณากรอกชื่อ นามสกุล น้ำหนัก ส่วนสูง และรอบเอวให้ครบ";return}
+  if(h0<100||h0>250){m.textContent="ส่วนสูงต้องอยู่ระหว่าง 100–250 ซม.";return}
   const photo=await readPhoto($("ph").files[0]);
-  const id=nextId();S.people.push({id,fn,ln,pos:$("pos").value.trim(),w0,c0,photo});save();
-  ["fn","ln","pos","w0","c0","ph"].forEach(x=>$(x).value="");
+  const id=nextId();S.people.push({id,fn,ln,pos:$("pos").value.trim(),w0,c0,h0,photo});save();
+  ["fn","ln","pos","w0","c0","h0","b0","ph"].forEach(x=>$(x).value="");
   m.style.color="var(--g)";m.textContent=`✔ ลงทะเบียนสำเร็จ — รหัสประจำตัว ${id}`;renderAll()};
 $("plist").onclick=e=>{const id=e.target.dataset.del;if(!id)return;
   if(!confirm("ลบผู้สมัครและผลการชั่งน้ำหนักทั้งหมดของคนนี้?"))return;
@@ -484,9 +482,9 @@ $("demo").onclick=()=>{
   const y=new Date().getFullYear(),st=addD(today(),-60);
   S={set:{start:st,end:addD(st,112),freq:2},people:[],logs:{}};
   const d=[["สมชาย","ใจดี","ฝ่ายบัญชี",92.5,104],["วิภา","รักสุข","ฝ่ายขาย",78.2,92],["ธนากร","แข็งแรง","IT Support",101.4,112],["พิมพ์ใจ","สว่างวัน","ฝ่ายบุคคล",66.8,81],["อานนท์","มั่นคง","คลังสินค้า",88.0,99]];
-  const rate=[.011,.016,.009,.013,.014];
+  const rate=[.011,.016,.009,.013,.014],hs=[172,160,178,158,170];
   d.forEach((x,k)=>{const id=`FF-${st.slice(0,4)}-${String(k+1).padStart(3,"0")}`;
-    S.people.push({id,fn:x[0],ln:x[1],pos:x[2],w0:x[3],c0:x[4],photo:""});S.logs[id]={};
+    S.people.push({id,fn:x[0],ln:x[1],pos:x[2],w0:x[3],c0:x[4],h0:hs[k],photo:""});S.logs[id]={};
     let w=x[3],c=x[4];for(let i=1;i<=4;i++){w-=x[3]*rate[k]*(0.8+((k*7+i*3)%5)/10);c-=1.1*(0.8+((k+i)%4)/5);S.logs[id][i]={w:+w.toFixed(1),c:+c.toFixed(1)}}});
   save();renderAll()};
 $("lgBtn").onclick=async()=>{
@@ -506,6 +504,9 @@ $("ulist").onclick=async e=>{const t=e.target;
     if(t.dataset.reset){const pw=prompt("รหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร)");if(!pw)return;await callUsers({action:"reset_password",user_id:t.dataset.reset,password:pw});toast("✔ เปลี่ยนรหัสผ่านแล้ว")}
   }catch(err){toast("ไม่สำเร็จ: "+err.message)}};
 ["lu","lp"].forEach(id=>$(id).onkeydown=e=>{if(e.key==="Enter")$("lgBtn").click()});
+["w0","h0"].forEach(id=>$(id).oninput=()=>{const b=bmi(parseFloat($("w0").value),parseFloat($("h0").value));$("b0").value=b&&isFinite(b)?b.toFixed(1)+" ("+bmiCat(b)[0]+")":""});
+$("plist").addEventListener("click",e=>{const id=e.target.dataset.h;if(!id)return;const p=S.people.find(x=>x.id===id);if(!p)return;
+  const v=parseFloat(prompt("ส่วนสูงของ "+p.fn+" (ซม.)",p.h0||""));if(isNaN(v)||v<100||v>250)return;p.h0=v;save();renderAll()});
 $("pwBtn").onclick=async()=>{const pw=$("npw").value,m=$("pwMsg");
   if(pw.length<8){m.style.color="var(--r)";m.textContent="อย่างน้อย 8 ตัวอักษร";return}
   const {error}=await sb.auth.updateUser({password:pw});
